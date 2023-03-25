@@ -64,5 +64,5 @@ Excell<br>
 
 ## Workflow
 <p align="center">
-  <img src='https://github.com/IZMEHD/graphite-project/blob/main/Images/Workflow.JPG.JPG' width=550 > 
+  <img src='https://github.com/IZMEHD/graphite-project/blob/main/Images/Workflow.JPG' width=550 > 
 </p>

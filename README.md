@@ -42,18 +42,46 @@ All of them utilise the distribution of particle properties of a given sample in
 
 ## Results
 
-Results Results Results Results Results Results Results Results Results Results Results Results Results Results Results 
-Results Results Results Results Results Results Results Results Results Results Results Results Results Results Results 
- Results Results Results Results Results Results Results Results Results Results Results Results Results Results Results 
- Results Results Results Results Results Results Results Results Results Results Results Results Results Results Results 
- Results Results Results Results Results Results Results Results Results Results Results Results Results Results Results 
+**MARS & GAN**<br>
+
+The MARS model was trained on an up-sampled dataset with 87 observations, which se-
+lected 9 out of 11 terms and 7 out of 42 predictors using the nprune parameter set to 10. The model
+demonstrated that the most important predictors
+are ’graphite distance to total mean’, ’convexity
+distance to 75 quantile’, ’nn 25 quantile’, and other
+significant predictors.  <br>
+
+The up-sampled MARS model’s performance
+was evaluated again using RMSE and R-squared
+values on the test dataset, with the RMSE value
+being 0.00718 and the R2 value being 0.998. Boot-
+strapping was also utilized to evaluate the model’s
+accuracy, with the mean of the predictions being
+0.0622 after 10,000 iterations. The up-sampled
+MARS model performed exceptionally well on
+the unseen dataset hence overcomed the problem
+of overfitting. <br>
+
+
+
+THe GAM model trained on the up-sampled dataset
+performed mostly well, with an R-squared value
+of 0.995 and promising predictions. 
+The model had an MSE and R- squared value on the test data of
+0.0414 and 0.940 respectively.
+
+**Clustering **<br>
+Our clustering approach allows us to come up with a way to determine the relative degenerated graphite ratio without using
+percentage labels, thus enabling predictions without the the need for them. Clustering also offers a
+possible metric to determine how similar samples are.
+
 
 
 ## Prerequisites
 To use our methods the follwing prerequisites need to be forfilled:  <br>
 
 
-**Software**
+**Software**<br>
 Python<br>
 Excell<br>
 ...<br>

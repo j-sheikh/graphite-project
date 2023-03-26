@@ -87,6 +87,10 @@ Python<br>
 Excell<br>
 ...<br>
 
+Before running the code, make sure you have the following packages installed in your R environment:
+
+rsample, caret, vip, pdp, Metrics, dplyr, glmnet, mgcv, caTools, segmented
+
 
 **Data Format**
 <br>
@@ -137,4 +141,11 @@ data itself. The user needs to provide the path to
 data frame of interest, df quantiles.
 
 MARS & GAM 
-TEXT
+This repository contains an R code that predicts the proportion of degenerated graphite in a dataset using various models. 
+The saved models are MARS_original.rds, MARS_upsampled.rds, GAM_original.rds, and GAM_upsampled.rds. 
+You can use these saved models to make predictions on your own dataset by loading them into your R environment and running the prediction function in the model_for_prediction.r file.
+
+Load the saved model you want to use into your R environment using the readRDS() function. The saved models are located in the models directory.
+Load your dataset using the read.csv() function.
+Call the prediction function with the loaded model and dataset paths as arguments. The function returns a list of prediction table, RMSE, and R-squared value.
+Print the results.

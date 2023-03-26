@@ -71,6 +71,7 @@ The model had an MSE and R- squared value on the test data of
 0.0414 and 0.940 respectively.
 
 **Clustering** <br>
+
 Our clustering approach allows us to come up with a way to determine the relative degenerated graphite ratio without using
 percentage labels, thus enabling predictions without the the need for them. Clustering also offers a
 possible metric to determine how similar samples are.

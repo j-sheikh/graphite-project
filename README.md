@@ -108,7 +108,7 @@ new samples.
 **Aggregating data - CSV-to-Excel**
 The first step in our process is to aggregate the measurements
 of multiple samples into one location. For this the
-provided program (link or git or what ever) can be
+provided program (https://www.dropbox.com/s/u4s936829du74rr/sisyphus_0.1.0.zip?dl=0) can be
 used. -Insert instruction-
 
 **Categorizing data - Excel-to-CSV** 

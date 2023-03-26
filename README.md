@@ -42,7 +42,7 @@ All of them utilise the distribution of particle properties of a given sample in
 
 ## Results
 
-**MARS & GAN**<br>
+**MARS & GAN** <br>
 
 The MARS model was trained on an up-sampled dataset with 87 observations, which se-
 lected 9 out of 11 terms and 7 out of 42 predictors using the nprune parameter set to 10. The model
@@ -70,7 +70,7 @@ of 0.995 and promising predictions.
 The model had an MSE and R- squared value on the test data of
 0.0414 and 0.940 respectively.
 
-**Clustering **<br>
+**Clustering ** <br>
 Our clustering approach allows us to come up with a way to determine the relative degenerated graphite ratio without using
 percentage labels, thus enabling predictions without the the need for them. Clustering also offers a
 possible metric to determine how similar samples are.
@@ -81,7 +81,7 @@ possible metric to determine how similar samples are.
 To use our methods the follwing prerequisites need to be forfilled:  <br>
 
 
-**Software**<br>
+**Software** <br>
 Python<br>
 Excell<br>
 ...<br>

@@ -36,16 +36,16 @@ os.environ['OMP_NUM_THREADS'] = '1'
 
 def run_hyperparamter_grid_model(df):
     param_grid = {
-        'KMeans': {
-            'n_clusters': [10 ,11, 12 ,13 ,14 ,15],
-            'init': ['k-means++'],
-            'n_init': [1, 10, 20, 30],
-            'max_iter': [50, 100, 200, 300],
-            'tol': [1e-1, 1e-2, 1e-3, 1e-4],
-            'algorithm': ['auto'],
-            'random_state':[0, 1, 36, 123]
-        }
-    }
+       'KMeans': {
+           'n_clusters': [10 ,11, 12 ,13 ,14 ,15],
+           'init': ['k-means++'],
+           'n_init': [1, 10, 20, 30],
+           'max_iter': [50, 100, 200, 300],
+           'tol': [1e-1, 1e-2, 1e-3, 1e-4],
+           'algorithm': ['auto'],
+           'random_state':[0, 1, 36, 123]
+       }
+   }
 
     X = StandardScaler().fit_transform(df.iloc[:, :-4])
     # Define the models to evaluate
@@ -154,7 +154,7 @@ def get_best_model(missclassified_probes, df):
             best_item = item
     return best_item, min_error_rate
 
-def bootstrap(df, best_hyperparams, iteration, with_v_perfect = False):
+def bootstrap(df, best_hyperparams, iteration, with_v_perfect = False, distance_to_perfect = False):
    
     if with_v_perfect:
         v_perfect = df[df.Probenbezeichnung == 'V_perfect']
@@ -214,10 +214,10 @@ def bootstrap(df, best_hyperparams, iteration, with_v_perfect = False):
         distances_to_majority = pd.Series(cluster_distances[majority_cluster])
         bootstrap_sample['distance_to_majority'] = bootstrap_sample['cluster'].map(distances_to_majority)
         
-        if with_v_perfect:
+        if distance_to_perfect:
             v_perfect_cluster = bootstrap_sample.loc[bootstrap_sample['Probenbezeichnung'] == 'V_perfect'].cluster[0]
-            distances_to_perfect = pd.Series(cluster_distances[v_perfect_cluster])
-            bootstrap_sample['distance_to_perfect'] = bootstrap_sample['cluster'].map(distances_to_perfect)
+            dist_to_perfect = pd.Series(cluster_distances[v_perfect_cluster])
+            bootstrap_sample['distance_to_perfect'] = bootstrap_sample['cluster'].map(dist_to_perfect)
             
         bootstrap_result[f"bootstrap_{bt}"] = (bootstrap_sample)
     
@@ -371,11 +371,13 @@ def creat_plots(df, target_path, target = 'distance_to_majority', target_spellin
     plt.show()
     
 
-def get_new_proportion(df, target):
-# Separate the chunky and non-chunky probes
-
+def get_new_proportion(df, target, scaler2):
+       
     scaler = MinMaxScaler(feature_range=(0.01, 0.99))
     
+    if scaler2:
+        scaler = MinMaxScaler(feature_range=(0.0, 0.99))
+       
     threshold = round(np.quantile(df[target], 0.75), 2)
     df.loc[df[target] < threshold, 'new_proportion'] = 0
     df.loc[df[target] >= threshold, 'new_proportion'] = scaler.fit_transform(df.loc[df[target] >= threshold, [target]])
@@ -383,7 +385,7 @@ def get_new_proportion(df, target):
 
 
 
-def run(path, target_path, iteration = 2000, with_v_perfect = False):
+def run(path, target_path, iteration = 2000, with_v_perfect = False, distance_to_perfect = False):
     
     if not os.path.exists(target_path):
         os.makedirs(target_path)
@@ -430,7 +432,7 @@ def run(path, target_path, iteration = 2000, with_v_perfect = False):
     
     bootstrap_results_df = pd.concat(bootstrap_result, axis=0)
     
-    if with_v_perfect:
+    if distance_to_perfect:
         grouped_perfect = bootstrap_results_df.groupby('Probenbezeichnung')['distance_to_perfect', 'chunky'].mean().reset_index()
         grouped_perfect = grouped_perfect.merge(df[['Probenbezeichnung', 'proportion']], on='Probenbezeichnung', how='left')
         grouped_perfect['new_name'] =  grouped_perfect['Probenbezeichnung'] + ' (' + grouped_perfect['proportion'].astype(str) + ')'
@@ -442,15 +444,19 @@ def run(path, target_path, iteration = 2000, with_v_perfect = False):
     grouped = grouped.merge(df[['Probenbezeichnung', 'proportion']], on='Probenbezeichnung', how='left')
     grouped['new_name'] =  grouped['Probenbezeichnung'] + ' (' + grouped['proportion'].astype(str) + ')'
         
-    creat_plots(grouped, target_path = f'{target_path}/majority/with_v_perfect_{with_v_perfect}')
+    creat_plots(grouped, target_path = f'{target_path}/majority/with_v_perfect_{with_v_perfect}_distance_to_perfect_{distance_to_perfect}')
     
     #distance_to_majority is better than distance_to_perfect
-    new_prop = get_new_proportion(grouped, target = 'distance_to_majority')
+    scaler2 = False
+    new_prop = get_new_proportion(grouped, target = 'distance_to_majority', scaler2 = scaler2)
     final_df = df.merge(new_prop[['Probenbezeichnung', 'new_proportion']], on='Probenbezeichnung', how='left')
     
-    final_df.to_csv(f'{target_path}/final_df_with_v_{with_v_perfect}.csv')
+    final_df.to_csv(f'{target_path}/new_proportion_with_v_{with_v_perfect}_scaler0_1_{scaler2}.csv')
     
-
+    alpha = 0.05
+    new_prop.loc[new_prop['new_proportion'] < alpha, 'new_proportion'] = 0
+    final_df = df.merge(new_prop[['Probenbezeichnung', 'new_proportion']], on='Probenbezeichnung', how='left')
+    final_df.to_csv(f'{target_path}/new_proportion_with_v_{with_v_perfect}_scaler0_1_{scaler2}_alpha')
 
 #add location of dataframes df_quantiles.csv  
 paths = ['XXX']

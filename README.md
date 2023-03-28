@@ -121,6 +121,7 @@ so for example:<br>
 Sample 1 from group 50: ABC_XYZ_50_1.csv<br>
 Sample 2 from group 50: ABC_XYZ_50_2.csv<br>
 
+The program uses a .xlsx template. Do not delete the template and keep it in the same folder as the .exe of the program. 
 
 
  

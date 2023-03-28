@@ -115,7 +115,7 @@ sub-folders for measurement .csv files and merges
 them into one Excel .xlsx file. All .csv in the selected folder must be of the source data type. 
 The names of the csv. files must have this pattern:<br>
 
-[any text exept _ ]_ [any text exept _ ]_[Sample groupID as number]_[Sample id in group as number].csv
+([any text exept _ ]_[any text exept _ ]_[Sample groupID as number]_[Sample id in group as number].csv)
 
 so for example:
 Sample 1 from group 50: ABC_XYZ_50_1.csv

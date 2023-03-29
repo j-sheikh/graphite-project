@@ -126,11 +126,16 @@ The program uses a .xlsx template. Do not delete the template and keep it in the
 
  
 
-**Categorizing data - Excel-to-CSV** 
-This step splits up the data of all samples into individual
+**Categorizing data - Excel-to-CSV and Transform Data-to-Quantile** 
+
+Split the data of all samples into individual
 csv. files for each of the particle attributes. After
 this step we have 7 files, each representing one
-attribute for all samples and there particles.
+attribute for all samples and there particles. After that
+the distribution quantiles are generated from the attribute
+data. 
+The __main__.py needs just the location of the files and will execute both steps,
+by calling the scripts read_graphite_data.py in Excel to CSV and transform_data.py in Transform Data to Quantile 
 
 **Upsampling** 
 As discussed in Section 3 it is pos-
@@ -164,3 +169,4 @@ Load the saved model you want to use into your R environment using the readRDS()
 Load your dataset using the read.csv() function.
 Call the prediction function with the loaded model and dataset paths as arguments. The function returns a list of prediction table, RMSE, and R-squared value.
 Print the results.
+

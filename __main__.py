@@ -4,6 +4,11 @@ Created on Tue Mar 28 10:05:59 2023
 
 @author: jannik sheikh
 """
+
+import sys
+sys.path.append('Excel to CSV')
+sys.path.append('Transform Data to Quantile')
+
 import os
 from read_graphite_data import get_data
 from transform_data import DataProcessor

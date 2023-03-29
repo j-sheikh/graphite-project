@@ -43,7 +43,7 @@ def run_hyperparamter_grid_model(df):
            'max_iter': [50, 100, 200, 300],
            'tol': [1e-1, 1e-2, 1e-3, 1e-4],
            'algorithm': ['auto'],
-           'random_state':[0, 1, 36, 123]
+           'random_state':[1]
        }
    }
 
@@ -132,8 +132,18 @@ def eval_results(scores, df):
                 missclassified_chunky_probes.append(chunky_probes_in_non_chunky)
     
             # Save missclassified probes for the current item
-            missclassified_probes[item] = {'non_chunky_probes': pd.concat(missclassified_non_chunky_probes),
-                                           'chunky_probes': pd.concat(missclassified_chunky_probes)}
+            if missclassified_non_chunky_probes and missclassified_chunky_probes:
+               missclassified_probes[item] = {'non_chunky_probes': pd.concat(missclassified_non_chunky_probes),
+                                                                 'chunky_probes': pd.concat(missclassified_chunky_probes)}
+            elif missclassified_non_chunky_probes:
+                missclassified_probes[item] = {'non_chunky_probes': pd.concat(missclassified_non_chunky_probes),
+                                                                 'chunky_probes': pd.DataFrame()}
+            elif missclassified_chunky_probes:
+                missclassified_probes[item] = {'non_chunky_probes': pd.DataFrame(),
+                                                                 'chunky_probes': pd.concat(missclassified_chunky_probes)}
+            else:
+                missclassified_probes[item] = {'non_chunky_probes': pd.DataFrame(),
+                                                             'chunky_probes': pd.DataFrame()}
    return  missclassified_probes  
 
 
@@ -145,6 +155,7 @@ def get_best_model(missclassified_probes, df):
     for item, values in missclassified_probes.items():
         non_chunky_probes = values['non_chunky_probes']
         chunky_probes = values['chunky_probes']
+        
         # Calculate error rate
         error_rate = (len(non_chunky_probes) + len(chunky_probes)) / len(df)
         
@@ -371,7 +382,7 @@ def creat_plots(df, target_path, target = 'distance_to_majority', target_spellin
     plt.show()
     
 
-def get_new_proportion(df, target, scaler2):
+def get_new_proportion(df, target, scaler2 = True):
        
     scaler = MinMaxScaler(feature_range=(0.01, 0.99))
     
@@ -379,6 +390,7 @@ def get_new_proportion(df, target, scaler2):
         scaler = MinMaxScaler(feature_range=(0.0, 0.99))
        
     threshold = round(np.quantile(df[target], 0.75), 2)
+
     df.loc[df[target] < threshold, 'new_proportion'] = 0
     df.loc[df[target] >= threshold, 'new_proportion'] = scaler.fit_transform(df.loc[df[target] >= threshold, [target]])
     return df
@@ -447,16 +459,49 @@ def run(path, target_path, iteration = 2000, with_v_perfect = False, distance_to
     creat_plots(grouped, target_path = f'{target_path}/majority/with_v_perfect_{with_v_perfect}_distance_to_perfect_{distance_to_perfect}')
     
     #distance_to_majority is better than distance_to_perfect
-    scaler2 = False
+    
+    scaler2 = True
+ 
     new_prop = get_new_proportion(grouped, target = 'distance_to_majority', scaler2 = scaler2)
+    
     final_df = df.merge(new_prop[['Probenbezeichnung', 'new_proportion']], on='Probenbezeichnung', how='left')
+    final_df.to_csv(f'{target_path}/final_df_with_v_{with_v_perfect}_scaler0_1_{scaler2}.csv')
     
-    final_df.to_csv(f'{target_path}/new_proportion_with_v_{with_v_perfect}_scaler0_1_{scaler2}.csv')
-    
+    new_prop = new_prop.sort_values('new_proportion')
+    plt.figure(figsize=(10, 8))
+    sns.barplot(data=new_prop[new_prop.new_proportion > 0], y='new_name', x='new_proportion')
+    plt.title('New Proportion')
+    plt.ylabel('Probes')
+    plt.xlabel('New Proportion')
+    plt.tight_layout()
+    plt.savefig(f'{target_path}/new_proportion_with_v_{with_v_perfect}_scaler0_1_{scaler2}')
+    plt.show()
+       
+
     alpha = 0.05
-    new_prop.loc[new_prop['new_proportion'] < alpha, 'new_proportion'] = 0
-    final_df = df.merge(new_prop[['Probenbezeichnung', 'new_proportion']], on='Probenbezeichnung', how='left')
-    final_df.to_csv(f'{target_path}/new_proportion_with_v_{with_v_perfect}_scaler0_1_{scaler2}_alpha')
+    final_df.loc[final_df['new_proportion'] < alpha, 'new_proportion'] = 0
+    final_df.to_csv(f'{target_path}/final_df_with_v_{with_v_perfect}_scaler0_1_{scaler2}_alpha_{alpha}.csv')
+    
+
+    final_df = final_df.sort_values(by='new_proportion', ascending=True)
+    final_df['new_name'] =  final_df['Probenbezeichnung'] + ' (' + final_df['proportion'].astype(str) + ')'
+
+    plt.figure(figsize=(10, 8))
+    sns.barplot(data=final_df[final_df.new_proportion > 0], y='new_name', x='new_proportion')
+    plt.title('New Proportion')
+    plt.ylabel('Probes')
+    plt.xlabel('New Proportion')
+    plt.tight_layout()
+    plt.savefig(f'{target_path}/new_proportion_with_v_{with_v_perfect}_scaler0_1_{scaler2}_alpha')
+    plt.show()
+    
+    
+    
+    
+    
+    
+    
+    
 
 #add location of dataframes df_quantiles.csv  
 paths = ['XXX']
@@ -468,4 +513,4 @@ for i in range(len(paths)):
     run(path = paths[i], target_path= target_paths[i])
     
     if i == 0:
-        run(path = paths[i], target_path= target_paths[i], with_v_perfect=True)
+        run(path = paths[i], target_path= target_paths[i], with_v_perfect=True, distance_to_perfect=True)

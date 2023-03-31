@@ -15,14 +15,18 @@ library(segmented) # For fitting segmented regression models
 # Define function to make predictions using a saved model
 model <- function(input_model_path, input_data_path){
   
-  # Load tuned GAM model from saved file
+  # Load tuned model from saved file
   tuned_model <- readRDS(input_model_path) # Path to the saved model
   
   # Load test data for predictions
   data_test <- read.csv(input_data_path) # Path to the dataset for predictions
   
-  # Make predictions using model
+  # Make predictions using model (For MARS)
   pred <- predict(tuned_model, data_test)
+  prediction_table <- cbind("actual" = data_test$proportion, 'predicted' = pred)
+  
+  # Make predictions using model (For GAM)
+  pred <- predict(tuned_model, data_test, type ='response')
   prediction_table <- cbind("actual" = data_test$proportion, 'predicted' = pred)
   
   # Calculate and print evaluation metrics

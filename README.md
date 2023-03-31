@@ -42,33 +42,22 @@ All of them utilise the distribution of particle properties of a given sample in
 
 ## Results
 
-**MARS & GAN** <br>
+**MARS & GAM** <br>
 
-The MARS model was trained on an up-sampled dataset with 87 observations, which se-
-lected 9 out of 11 terms and 7 out of 42 predictors using the nprune parameter set to 10. The model
-demonstrated that the most important predictors
-are ’graphite distance to total mean’, ’convexity
-distance to 75 quantile’, ’nn 25 quantile’, and other
-significant predictors.  <br>
+Four variants of the MARS model are used -  trained on the original dataset of 55 observations for predicting original proportions and new proportions , another trained on an up-sampled dataset of 109 observations for predicting original proportions and new proportions. MARS model trained for predicting original proportions, the one trained on the original dataset performs better than the one trained on the up-sampled dataset. The RMSE is 0.0602 for the model trained on the original dataset, which is lower than the model trained on the up-sampled dataset having RMSE of 0.0952. The R2 value of 0.9332 is also higher than the model trained on the up-sampled dataset having R2 value of 0.8334.
 
-The up-sampled MARS model’s performance
-was evaluated again using RMSE and R-squared
-values on the test dataset, with the RMSE value
-being 0.00718 and the R2 value being 0.998. Boot-
-strapping was also utilized to evaluate the model’s
-accuracy, with the mean of the predictions being
-0.0622 after 10,000 iterations. The up-sampled
-MARS model performed exceptionally well on
-the unseen dataset hence overcomed the problem
-of overfitting. <br>
+We used the same methods for predicting new proportions generated through the clustering approach. And found that both versions of the MARS model(trained on original data and up-sampled data) perform exceptionally well on test data for predicting new proportions. The RMSE values for the model trained on original data and upsampled data are 0.0318 and 0.0271 respectively and R2 value are 0.9862 and 0.9899 for model trained on original data and upsampled data respectively. 
 
+However, the model predicts non-positive values for some of the non-degenerate graphite samples in MARS model, this can be remedied with the GAM model.
 
+GAM is also trained in the same manner like MARS model having 4 different version two for predicting original proportions and two for predicting new proportions.The GAM model trained on the original dataset has almost identical predictions to the MARS model trained on the original dataset, with an R-squared value of 0.9596 and an RMSE value of 0.0469 on the test data. Meanwhile, the GAM model trained on the up-sampled data still has similar predictions to the MARS model. Additionally, all predicted values are in the range of 0 to 1, which is an advantage over the MARS model because the GAM model can handle a variety of response distributions.
 
-THe GAM model trained on the up-sampled dataset
-performed mostly well, with an R-squared value
-of 0.995 and promising predictions. 
-The model had an MSE and R- squared value on the test data of
-0.0414 and 0.940 respectively.
+![image](https://user-images.githubusercontent.com/103118176/229027050-8b14163a-bd79-4097-be27-b1ad1961e231.png)
+
+To summarize, after looking at the predicted values and RMSE and R2 values from the image above, it is evident that the GAM model trained on the original dataset performs better than the GAM model trained on the up-sampled dataset, similar to the MARS model. Therefore, up-sampling does not significantly improve predictions for original proportions.
+
+Similarly, we trained two versions of the GAM model for predicting new proportions. However, neither of the models provided as accurate predictions as the MARS model, and the RMSE and R2 values for these models are also not as good compared to all other models.
+
 
 **Clustering** <br>
 
@@ -162,7 +151,7 @@ data frame of interest, df quantiles.
 
 MARS & GAM 
 This repository contains an R code that predicts the proportion of degenerated graphite in a dataset using various models. 
-The saved models are MARS_original.rds, MARS_upsampled.rds, GAM_original.rds, and GAM_upsampled.rds. 
+The saved models are MARS_or.rds, MARS_up.rds, GAM_or.rds, and GAM_up.rds , MARS_or_np.rds, MARS_up_np.rds, GAMor_np.rds, and GAMup_np.rds
 You can use these saved models to make predictions on your own dataset by loading them into your R environment and running the prediction function in the model_for_prediction.r file.
 
 Load the saved model you want to use into your R environment using the readRDS() function. The saved models are located in the models directory.

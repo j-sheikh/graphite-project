@@ -1,4 +1,4 @@
-# Utilizing Particle Property Distributions to Determine Chunky Graphite Ratios in Iron Castings.
+# Utilizing Particle Property Distributions to Determine Chunky Graphite Ratios in Iron Castings
 
 ***Summary*** 
 

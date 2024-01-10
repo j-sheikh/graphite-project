@@ -3,7 +3,7 @@
 ***Summary*** 
 
 
-This project demonstrates new approaches in determining the ratio of degenerated or “chunky” graphite in casing samples.
+This project demonstrates new approaches to determining the ratio of degenerated or “chunky” graphite in casing samples.
 By using the distribution of particle parameters (roundness, compactness, convexity, i.e) and applying multivariate adaptive regression splines (MARS), 
 generalized additive models (GAM), and clustering methods we show that it is possible to determine the chunky
 graphite-ratio with higher accuracy than with traditional approaches that focus on single particles to determine their type. Additionally, we demonstrate an up-sampling method to account
